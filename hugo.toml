@@ -1,0 +1,9 @@
+baseURL = 'https://sogoddamntough.netlify.app/'
+languageCode = 'en-us'
+title = 'So Goddamn Tough'
+theme = 'minimal'
+outputs = { home = ["HTML"] }
+
+[params]
+description = 'Uplifting edits with phonk music'
+author = 'You'

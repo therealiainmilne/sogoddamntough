@@ -1,0 +1,47 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes"?>
+<rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
+  <channel>
+    <title>Phonk on So Goddamn Tough</title>
+    <link>https://sogoddamntough.netlify.app/phonk/</link>
+    <description>Recent content in Phonk on So Goddamn Tough</description>
+    <generator>Hugo</generator>
+    <language>en-us</language>
+    <lastBuildDate>Wed, 18 Mar 2026 00:00:00 +0000</lastBuildDate>
+    <atom:link href="https://sogoddamntough.netlify.app/phonk/index.xml" rel="self" type="application/rss+xml" />
+    <item>
+      <title>Montagem Coma</title>
+      <link>https://sogoddamntough.netlify.app/phonk/montagem_coma/</link>
+      <pubDate>Wed, 18 Mar 2026 00:00:00 +0000</pubDate>
+      <guid>https://sogoddamntough.netlify.app/phonk/montagem_coma/</guid>
+      <description></description>
+    </item>
+    <item>
+      <title>MXZI ACELERADA</title>
+      <link>https://sogoddamntough.netlify.app/phonk/song1/</link>
+      <pubDate>Wed, 18 Mar 2026 00:00:00 +0000</pubDate>
+      <guid>https://sogoddamntough.netlify.app/phonk/song1/</guid>
+      <description></description>
+    </item>
+    <item>
+      <title>NO BATIDÃO</title>
+      <link>https://sogoddamntough.netlify.app/phonk/song2/</link>
+      <pubDate>Wed, 18 Mar 2026 00:00:00 +0000</pubDate>
+      <guid>https://sogoddamntough.netlify.app/phonk/song2/</guid>
+      <description></description>
+    </item>
+    <item>
+      <title>Sodelanemo</title>
+      <link>https://sogoddamntough.netlify.app/phonk/sodelanemo/</link>
+      <pubDate>Wed, 18 Mar 2026 00:00:00 +0000</pubDate>
+      <guid>https://sogoddamntough.netlify.app/phonk/sodelanemo/</guid>
+      <description></description>
+    </item>
+    <item>
+      <title>Tiki Tiki</title>
+      <link>https://sogoddamntough.netlify.app/phonk/qmiir_tiki_tiki/</link>
+      <pubDate>Wed, 18 Mar 2026 00:00:00 +0000</pubDate>
+      <guid>https://sogoddamntough.netlify.app/phonk/qmiir_tiki_tiki/</guid>
+      <description></description>
+    </item>
+  </channel>
+</rss>

@@ -1,0 +1,800 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>{{ .Site.Title }}</title>
+    <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@700;900&display=swap" rel="stylesheet">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            background: #000;
+            color: #fff;
+            overflow: hidden;
+            margin: 0;
+            padding: 0;
+        }
+
+        .selection-screen {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100vh;
+            background: #000;
+            display: flex;
+            align-items: center;
+            justify-content: flex-start;
+            z-index: 200;
+            flex-direction: column;
+            padding-top: 200px;
+        }
+
+        .selection-content {
+            display: flex;
+            flex-direction: column;
+            gap: 40px;
+            align-items: center;
+            justify-content: center;
+            text-align: center;
+        }
+
+        .selection-button {
+            font-family: 'Playfair Display', serif;
+            font-size: 32px;
+            font-weight: 900;
+            color: #fff;
+            background: transparent;
+            border: 3px solid #fff;
+            padding: 20px 50px;
+            cursor: pointer;
+            letter-spacing: 2px;
+            transition: all 0.3s ease;
+            text-transform: uppercase;
+        }
+
+        .selection-button:hover {
+            background: #fff;
+            color: #000;
+            transform: scale(1.05);
+        }
+
+        @media (max-width: 768px) {
+            .selection-button {
+                font-size: 24px;
+                padding: 15px 40px;
+            }
+        }
+
+        .selection-image {
+            max-width: 400px;
+            height: auto;
+            margin-top: 20px;
+            object-fit: contain;
+        }
+
+        @media (max-width: 768px) {
+            .selection-image {
+                max-width: 250px;
+            }
+        }
+
+        .copyright {
+            position: fixed;
+            bottom: 20px;
+            left: 0;
+            right: 0;
+            text-align: center;
+            font-size: 12px;
+            opacity: 0.6;
+            z-index: 250;
+        }
+
+        .header {
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            padding: 8px 10px;
+            z-index: 300;
+            text-align: center;
+            overflow: hidden;
+        }
+
+        @supports (padding: max(0px)) {
+            .header {
+                padding-top: max(8px, env(safe-area-inset-top));
+                padding-bottom: 8px;
+            }
+        }
+
+        .header-content {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 15px;
+            flex-direction: row-reverse;
+        }
+
+        .header-logo {
+            height: 80px;
+            width: auto;
+            object-fit: contain;
+        }
+
+        .logo {
+            font-family: 'Playfair Display', serif;
+            font-size: 22px;
+            font-weight: 900;
+            color: #fff;
+            letter-spacing: 1px;
+            margin: 0 0 0 15px;
+            text-shadow: 0 2px 10px rgba(0, 0, 0, 0.5);
+            text-transform: lowercase;
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+            cursor: pointer;
+            transition: opacity 0.3s ease;
+        }
+
+        .logo:hover {
+            opacity: 0.7;
+        }
+
+        @media (min-width: 769px) {
+            .logo {
+                font-size: 26px;
+                margin: 0 0 0 30px;
+            }
+        }
+
+        .video-feed {
+            height: 100vh;
+            width: 100%;
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            overflow: hidden;
+            display: none;
+            align-items: center;
+            justify-content: center;
+            margin: 0;
+            padding: 0;
+        }
+
+        .video-feed.active {
+            display: flex !important;
+        }
+
+        @media (min-width: 769px) {
+            .video-feed {
+                max-width: 100%;
+                margin: 0 auto;
+            }
+        }
+
+        .video-container {
+            height: 100vh;
+            width: 100%;
+            position: fixed;
+            top: 0;
+            left: 0;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            background: #000;
+            opacity: 0;
+            transition: opacity 0.6s ease;
+            margin: 0;
+            padding: 0;
+            overflow: hidden;
+        }
+
+        .video-container.active {
+            opacity: 1;
+        }
+
+        @media (min-width: 769px) {
+            .video-container {
+                max-width: 430px;
+                position: absolute;
+                top: 50%;
+                left: 50%;
+                transform: translate(-50%, -50%);
+                height: auto;
+                width: auto;
+                fixed: unset;
+            }
+        }
+
+
+        .video-wrapper {
+            width: 100%;
+            height: 100%;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            position: relative;
+            margin: 0;
+            padding: 0;
+        }
+
+        video {
+            max-width: 100%;
+            max-height: 90vh;
+            width: auto;
+            height: auto;
+            object-fit: contain;
+        }
+
+        @media (min-width: 769px) {
+            video {
+                max-width: 430px;
+                max-height: 100vh;
+            }
+        }
+
+        .audio-feed {
+            height: 100vh;
+            width: 100%;
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            overflow: auto;
+            display: none;
+            flex-direction: column;
+            align-items: center;
+            justify-content: flex-start;
+            margin: 0;
+            padding: 100px 20px 40px;
+            background: #000;
+            z-index: 100;
+        }
+
+        .audio-feed.active {
+            display: flex !important;
+        }
+
+        .audio-container {
+            width: 100%;
+            max-width: 400px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            background: #000;
+            margin: 30px 0;
+            padding: 20px;
+            border: 2px solid #fff;
+            border-radius: 10px;
+            opacity: 1;
+        }
+
+        .audio-wrapper {
+            width: 100%;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            gap: 20px;
+            pointer-events: auto;
+        }
+
+        .audio-title {
+            font-family: 'Playfair Display', serif;
+            font-size: 22px;
+            font-weight: 900;
+            color: #fff;
+            text-align: center;
+        }
+
+        audio {
+            display: none;
+        }
+
+        .play-btn {
+            font-family: 'Playfair Display', serif;
+            font-size: 20px;
+            font-weight: 900;
+            color: #fff;
+            background: transparent;
+            border: 3px solid #fff;
+            padding: 15px 40px;
+            cursor: pointer;
+            letter-spacing: 2px;
+            transition: all 0.3s ease;
+            text-transform: uppercase;
+        }
+
+        .play-btn:hover {
+            background: #fff;
+            color: #000;
+            transform: scale(1.05);
+        }
+
+        .play-btn.playing {
+            border-color: #ff006e;
+            color: #ff006e;
+        }
+
+        .play-btn.playing:hover {
+            background: #ff006e;
+            color: #fff;
+        }
+
+        @media (max-width: 768px) {
+            .audio-wrapper {
+                max-width: 90%;
+            }
+        }
+
+        .video-info {
+            display: none;
+        }
+
+        .video-title {
+            font-size: 18px;
+            font-weight: 600;
+            margin-bottom: 8px;
+        }
+
+        .video-description {
+            font-size: 14px;
+            opacity: 0.9;
+            line-height: 1.4;
+        }
+
+        .scroll-hint {
+            position: fixed;
+            right: 20px;
+            top: 50%;
+            transform: translateY(-50%);
+            font-size: 12px;
+            opacity: 0.6;
+            z-index: 20;
+            text-align: center;
+        }
+
+        @media (min-width: 769px) {
+            .scroll-hint {
+                right: auto;
+                left: 50%;
+                margin-left: 230px;
+            }
+        }
+
+        .scroll-icon {
+            font-size: 24px;
+            display: block;
+            animation: bounce 2s infinite;
+        }
+
+        @keyframes bounce {
+            0%, 100% {
+                transform: translateY(0);
+            }
+            50% {
+                transform: translateY(10px);
+            }
+        }
+
+        @keyframes flicker {
+            0%, 100% {
+                filter: brightness(1);
+            }
+            50% {
+                filter: brightness(0.2);
+            }
+        }
+
+        video.flicker-mode {
+            animation: flicker 0.1s infinite !important;
+        }
+
+
+
+        .video-counter {
+            display: none;
+        }
+
+        .progress-bar {
+            display: none;
+        }
+
+        .header-logo {
+            height: 55px;
+            width: auto;
+            object-fit: contain;
+            cursor: pointer;
+            transition: transform 0.3s ease;
+            flex-shrink: 0;
+        }
+
+        .header-logo:hover {
+            transform: scale(1.1);
+        }
+
+        @media (min-width: 769px) {
+            .header-logo {
+                height: 70px;
+            }
+        }
+
+        /* Mobile optimizations */
+        @media (max-width: 768px) {
+            .video-info {
+                bottom: 60px;
+                left: 15px;
+                right: 15px;
+                max-width: 100%;
+            }
+
+            .video-title {
+                font-size: 16px;
+            }
+
+            .video-description {
+                font-size: 13px;
+            }
+
+            .scroll-hint {
+                display: none;
+            }
+
+            video {
+                max-height: 90vh;
+            }
+        }
+    </style>
+</head>
+<body>
+    <header class="header">
+        <div class="header-content">
+            <img id="headerLogo" class="header-logo" src="/images/logotroll.png" alt="Logo" title="Click to toggle playlist mode">
+            <h1 class="logo">sogoddamntough.com</h1>
+        </div>
+    </header>
+
+    <div class="selection-screen" id="selectionScreen">
+        <div class="selection-content">
+            <button class="selection-button" id="toughReelsBtn">TOUGH REELS</button>
+            <button class="selection-button" id="toughPhonkBtn">TOUGH PHONK</button>
+            <img src="/images/image-removebg-preview (5).png" alt="Selection Banner" class="selection-image">
+        </div>
+    </div>
+
+    <div class="copyright" id="copyright">
+        © <span id="year"></span> So Goddamn Tough. All rights reserved.
+    </div>
+
+    <div class="video-feed" id="videoFeed" style="display: none;">
+    </div>
+
+    <div class="audio-feed" id="audioFeed">
+        {{ $phonkPages := where .Site.RegularPages "Section" "phonk" }}
+        {{ range $phonkPages }}
+        <div class="audio-container">
+            <div class="audio-wrapper">
+                <h2 class="audio-title">{{ .Title }}</h2>
+                <audio>
+                    <source src="/phonk/{{ .Params.audioFile }}" type="audio/mpeg">
+                </audio>
+                <button class="play-btn">▶ PLAY</button>
+            </div>
+        </div>
+        {{ end }}
+    </div>
+
+    {{ range .Site.RegularPages.ByDate.Reverse }}
+        {{ if eq .Section "videos" }}
+    <div class="video-container" data-index="{{ .Params.videoFile }}">
+        <div class="video-wrapper">
+            <video playsinline>
+                <source src="/videos/{{ .Params.videoFile }}" type="video/mp4">
+                Your browser does not support the video tag.
+            </video>
+            <div class="video-info">
+                <div class="video-title">{{ .Title }}</div>
+                <div class="video-description">{{ .Description }}</div>
+            </div>
+        </div>
+    </div>
+        {{ end }}
+    {{ end }}
+
+    <div class="scroll-hint" id="scrollHint">
+        <span class="scroll-icon">↓</span>
+        Scroll
+    </div>
+
+    <div class="progress-bar" id="progressBar"></div>
+
+    <script>
+        document.getElementById('year').textContent = new Date().getFullYear();
+        const feed = document.getElementById('videoFeed');
+        let containers = Array.from(document.querySelectorAll('.video-container'));
+        const scrollHint = document.getElementById('scrollHint');
+        const headerLogo = document.getElementById('headerLogo');
+
+        let currentIndex = 0;
+        let isScrolling = false;
+        let hasScrolled = false;
+        let playlistMode = false; // Toggle between single video sound vs all videos sound
+        let isInReels = false; // Track if user is viewing reels
+        const scrollCooldown = 1000; // ms between scrolls
+
+        function updateActiveVideo() {
+            containers.forEach((container, index) => {
+                const video = container.querySelector('video');
+                if (video) {
+                    if (index === currentIndex) {
+                        container.classList.add('active');
+                        video.currentTime = 0;
+                        video.muted = false; // Active video always has sound in both modes
+
+                        video.play().catch(e => console.log('Autoplay prevented'));
+
+                        // Auto-restart video when it ends
+                        video.onended = function() {
+                            this.currentTime = 0;
+                            this.play();
+                        };
+
+                        // Pause/resume on click
+                        video.addEventListener('click', function(e) {
+                            if (video.paused) {
+                                video.play();
+                            } else {
+                                video.pause();
+                            }
+                        });
+                    } else {
+                        container.classList.remove('active');
+
+                        if (playlistMode) {
+                            // In playlist mode, keep previous videos playing with sound
+                            video.muted = false;
+                            if (index < currentIndex) {
+                                video.play().catch(e => console.log('Video play prevented'));
+                            } else {
+                                video.pause();
+                            }
+                        } else {
+                            // In single mode, pause and mute all other videos
+                            video.muted = true;
+                            video.pause();
+                        }
+                    }
+                }
+            });
+        }
+
+        // Click logo to toggle playlist mode (disabled in phonk page)
+        headerLogo.addEventListener('click', () => {
+            if (isInPhonk) return; // Disable in phonk page
+
+            playlistMode = !playlistMode;
+            updateActiveVideo();
+            headerLogo.style.opacity = playlistMode ? '0.6' : '1';
+
+            // Add flicker effect to all videos when in playlist mode
+            containers.forEach(container => {
+                const video = container.querySelector('video');
+                if (video) {
+                    if (playlistMode) {
+                        video.classList.add('flicker-mode');
+                    } else {
+                        video.classList.remove('flicker-mode');
+                    }
+                }
+            });
+        });
+
+        // Click sogoddamntough.com text to go back home
+        const logoText = document.querySelector('.logo');
+        logoText.addEventListener('click', () => {
+            // Stop all audio and video
+            document.querySelectorAll('audio').forEach(a => {
+                a.pause();
+                a.currentTime = 0;
+            });
+            document.querySelectorAll('video').forEach(v => {
+                v.pause();
+                v.currentTime = 0;
+            });
+
+            // Reset play buttons
+            document.querySelectorAll('.play-btn').forEach(b => {
+                b.classList.remove('playing');
+                b.textContent = '▶ PLAY';
+            });
+
+            document.getElementById('selectionScreen').style.display = 'flex';
+            document.getElementById('videoFeed').classList.remove('active');
+            document.getElementById('audioFeed').classList.remove('active');
+            document.getElementById('copyright').style.display = 'block';
+            currentIndex = 0;
+            playlistMode = false;
+            isInPhonk = false;
+            isInReels = false;
+            headerLogo.style.opacity = '1';
+
+            // Remove flicker from all videos
+            containers.forEach(container => {
+                const video = container.querySelector('video');
+                if (video) {
+                    video.classList.remove('flicker-mode');
+                }
+            });
+        });
+
+        function handleScroll(direction) {
+            // Only allow scrolling if in reels mode
+            if (isScrolling || isInPhonk || !isInReels) return;
+
+            const newIndex = direction === 'down'
+                ? (currentIndex + 1) % containers.length
+                : (currentIndex - 1 + containers.length) % containers.length;
+
+            if (newIndex !== currentIndex) {
+                // Hide scroll hint after first scroll
+                if (!hasScrolled) {
+                    scrollHint.style.opacity = '0';
+                    scrollHint.style.pointerEvents = 'none';
+                    hasScrolled = true;
+                }
+
+                isScrolling = true;
+                currentIndex = newIndex;
+                updateActiveVideo();
+
+                setTimeout(() => {
+                    isScrolling = false;
+                }, scrollCooldown);
+            }
+        }
+
+        // Mouse wheel scroll
+        document.addEventListener('wheel', (e) => {
+            e.preventDefault();
+            handleScroll(e.deltaY > 0 ? 'down' : 'up');
+        }, { passive: false });
+
+        // Touch swipe
+        let touchStartY = 0;
+        document.addEventListener('touchstart', (e) => {
+            touchStartY = e.touches[0].clientY;
+        });
+
+        document.addEventListener('touchend', (e) => {
+            const touchEndY = e.changedTouches[0].clientY;
+            const diff = touchStartY - touchEndY;
+            if (Math.abs(diff) > 50) {
+                handleScroll(diff > 0 ? 'down' : 'up');
+            }
+        });
+
+        // Keyboard navigation
+        document.addEventListener('keydown', (e) => {
+            if (e.key === 'ArrowDown') handleScroll('down');
+            if (e.key === 'ArrowUp') handleScroll('up');
+        });
+
+        // Handle button clicks
+        document.getElementById('toughReelsBtn').addEventListener('click', (e) => {
+            e.preventDefault();
+            showCategory('reels');
+        });
+
+        document.getElementById('toughPhonkBtn').addEventListener('click', (e) => {
+            e.preventDefault();
+            showCategory('phonk');
+        });
+
+        let isInPhonk = false;
+
+        function showCategory(category) {
+            // Stop all audio and video before switching
+            document.querySelectorAll('audio').forEach(a => {
+                a.pause();
+                a.currentTime = 0;
+            });
+            document.querySelectorAll('video').forEach(v => {
+                v.pause();
+                v.currentTime = 0;
+            });
+
+            // Hide everything first
+            document.getElementById('selectionScreen').style.display = 'none';
+            document.getElementById('videoFeed').classList.remove('active');
+            document.getElementById('audioFeed').classList.remove('active');
+            document.getElementById('copyright').style.display = 'none';
+
+            if (category === 'phonk') {
+                // Show audio feed for phonk
+                const audioContainers = Array.from(document.querySelectorAll('.audio-container'));
+                if (audioContainers.length === 0) {
+                    // No phonk music yet
+                    document.getElementById('selectionScreen').style.display = 'flex';
+                    return;
+                }
+                isInPhonk = true;
+                isInReels = false;
+                audioContainers.forEach(a => a.style.display = '');
+                document.getElementById('audioFeed').classList.add('active');
+            } else {
+                // Show videos for reels
+                isInPhonk = false;
+                isInReels = true;
+                const allVideos = Array.from(document.querySelectorAll('.video-container'));
+                allVideos.forEach(v => v.style.display = '');
+                allVideos.sort(() => Math.random() - 0.5);
+                containers.length = 0;
+                allVideos.forEach(v => containers.push(v));
+                currentIndex = 0;
+                document.getElementById('videoFeed').classList.add('active');
+                updateActiveVideo();
+            }
+        }
+
+        // Handle play buttons for audio
+        setTimeout(() => {
+            document.querySelectorAll('.play-btn').forEach((btn) => {
+                btn.addEventListener('click', (e) => {
+                    e.preventDefault();
+                    e.stopPropagation();
+
+                    const wrapper = btn.closest('.audio-wrapper');
+                    const audio = wrapper ? wrapper.querySelector('audio') : null;
+
+                    if (!audio) {
+                        console.log('Audio element not found');
+                        return;
+                    }
+
+                    // Stop all other audio
+                    document.querySelectorAll('audio').forEach(a => {
+                        if (a !== audio) {
+                            a.pause();
+                            a.currentTime = 0;
+                        }
+                    });
+
+                    // Update all buttons
+                    document.querySelectorAll('.play-btn').forEach(b => {
+                        b.classList.remove('playing');
+                        b.textContent = '▶ PLAY';
+                    });
+
+                    // Toggle current audio
+                    if (audio.paused) {
+                        audio.play().catch(e => console.log('Play error:', e));
+                        btn.classList.add('playing');
+                        btn.textContent = '⏸ PAUSE';
+                    } else {
+                        audio.pause();
+                        btn.classList.remove('playing');
+                        btn.textContent = '▶ PLAY';
+                    }
+
+                    // Update button on audio end
+                    audio.onended = () => {
+                        btn.classList.remove('playing');
+                        btn.textContent = '▶ PLAY';
+                    };
+                });
+            });
+        }, 100);
+    </script>
+</body>
+</html>
