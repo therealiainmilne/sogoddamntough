@@ -499,7 +499,7 @@
         {{ if eq .Section "videos" }}
     <div class="video-container" data-index="{{ .Params.videoFile }}">
         <div class="video-wrapper">
-            <video playsinline>
+            <video playsinline preload="metadata" loading="lazy">
                 <source src="/videos/{{ .Params.videoFile }}" type="video/mp4">
                 Your browser does not support the video tag.
             </video>
