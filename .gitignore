@@ -1,0 +1,10 @@
+# Hugo
+public/
+resources/_gen/
+
+# Hugo build lock
+.hugo_build.lock
+
+# OS
+.DS_Store
+Thumbs.db
